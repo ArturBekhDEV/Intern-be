@@ -1,0 +1,42 @@
+version: "3.8"
+networks:
+  intern-app:
+    driver: bridge
+services:
+  api:
+    container_name: api
+    build: .
+    ports:
+      - ${PORT}:${PORT}
+    restart: always
+    environment:
+      - PORT=${PORT}
+    networks:
+      - intern-app
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+  db:
+    container_name: db
+    image: postgres:15-alpine
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_PASS=${DB_PASS}
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_USER=${DB_USER}
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - intern-app
+volumes:
+  pgdata:
