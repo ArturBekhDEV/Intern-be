@@ -9,6 +9,7 @@ import {
 export class SignUpDto {
   @MinLength(3)
   @IsString()
+  @IsOptional()
   firstName: string;
 
   @MinLength(3)
