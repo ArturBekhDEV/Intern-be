@@ -17,23 +17,19 @@ services:
       - db
     volumes:
       - .:/app
+      - ./node_modules:/app/node_modules
+      - /dev/null:/app/.env
   db:
     container_name: db
     image: postgres:15-alpine
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     environment:
-      - DB_PORT=${DB_PORT}
-      - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - DB_NAME=${DB_NAME}
-      - POSTGRES_PASSWORD=${DB_PASS}
-      - POSTGRES_PASS=${DB_PASS}
-      - POSTGRES_HOST=${DB_HOST}
-      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
       - DATABASE_URL=${DATABASE_URL}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
