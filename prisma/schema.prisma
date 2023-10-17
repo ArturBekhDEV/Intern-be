@@ -22,4 +22,6 @@ model User {
   
   password String
   role  Roles
+
+  @@map("user")
 }
