@@ -6,11 +6,7 @@ export const envOptions: ConfigModuleOptions = {
   validationSchema: joi.object({
     NODE_ENV: joi
       .string()
-<<<<<<< HEAD
       .valid('development', 'production', 'test')
-=======
-      .valid('development', 'production')
->>>>>>> 918a961 (feature: add sign up, crypto module and some basic config)
       .default('development'),
   }),
   isGlobal: true,
