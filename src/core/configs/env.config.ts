@@ -5,7 +5,7 @@ export const envOptions = {
   validationSchema: joi.object({
     NODE_ENV: joi
       .string()
-      .valid('development', 'production')
+      .valid('development', 'production', 'test')
       .default('development'),
   }),
   isGlobal: true,
