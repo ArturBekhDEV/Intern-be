@@ -5,6 +5,7 @@ import { Roles } from '@prisma/client';
 import { InjectCrypto } from '@/core/crypto/crypto.decorator';
 import { CryptoService } from '@/core/crypto/crypto.service';
 import { InjectPrisma } from '@/prisma/prisma.decorator';
+
 @Injectable()
 export class AuthService {
   constructor(
