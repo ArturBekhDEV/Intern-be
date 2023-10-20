@@ -4,6 +4,11 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
+const prismaReset = async (prisma: PrismaService) => {
+  await prisma.truncate();
+  await prisma.resetSequences();
+};
+
 export const initApp = async () => {
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule],
@@ -12,6 +17,7 @@ export const initApp = async () => {
 
   const app = moduleRef.createNestApplication();
   await app.init();
+  await prismaReset(prisma);
   return { prisma, app };
 };
 
@@ -19,8 +25,7 @@ export const closeApp = async (
   prisma: PrismaService,
   app: INestApplication,
 ) => {
-  await prisma.truncate();
-  await prisma.resetSequences();
+  await prismaReset(prisma);
   await prisma.$disconnect();
   await app.close();
 };

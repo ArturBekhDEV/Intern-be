@@ -6,6 +6,8 @@ async function main() {
   const port = process.env.PORT;
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({ origin: process.env.CLIENT_URL });
+
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(port, () =>

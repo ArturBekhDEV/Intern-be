@@ -20,7 +20,7 @@ model User {
   firstName  String @map("first_name")
   lastName  String? @map("last_name")
   
-  password String
+  password String?
   role  Roles
   
   @@map("users")

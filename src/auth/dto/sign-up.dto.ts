@@ -5,6 +5,7 @@ import {
   IsStrongPassword,
   MinLength,
 } from 'class-validator';
+
 export class SignUpDto {
   @MinLength(3)
   @IsString()
