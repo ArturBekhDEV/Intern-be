@@ -6,21 +6,27 @@ import { OAuth2Client } from 'google-auth-library';
 export class OauthService {
   private $client: OAuth2Client;
   constructor(private readonly configService: ConfigService) {
-    this.$client = new OAuth2Client(
+    this.client = new OAuth2Client(
       this.configService.get('GOOGLE_CLIENT_ID'),
       this.configService.get('GOOGLE_CLIENT_SECRET'),
     );
   }
 
   async getTokenPayload(token: string) {
-    const veryfyingResponse = await this.$client.verifyIdToken({
+    const googleClientId = this.configService.get('GOOGLE_CLIENT_ID');
+    const verifyingResponse = await this.$client.verifyIdToken({
       idToken: token,
-      audience: this.configService.get('GOOGLE_CLIENT_ID'),
+      audience: googleClientId,
     });
-    return veryfyingResponse.getPayload();
+
+    return verifyingResponse.getPayload();
   }
 
   get client() {
     return this.$client;
+  }
+
+  set client(value: OAuth2Client) {
+    this.$client = value;
   }
 }
