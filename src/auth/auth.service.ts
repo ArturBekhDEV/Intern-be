@@ -14,6 +14,7 @@ import { SignInWithGoogleDto } from '@/auth/dto/sign-in-with-google.dto';
 import { OauthService } from '@/core/oauth/oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,6 +22,7 @@ export class AuthService {
     @InjectCrypto() private cryptoService: CryptoService,
     private configService: ConfigService,
     private oauthService: OauthService,
+
     private jwtService: JwtService,
   ) {}
 
