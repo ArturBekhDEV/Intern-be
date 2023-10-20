@@ -20,6 +20,7 @@ export class AuthService {
   constructor(
     @InjectPrisma() private prismaService: PrismaService,
     @InjectCrypto() private cryptoService: CryptoService,
+
     private configService: ConfigService,
     private oauthService: OauthService,
 
