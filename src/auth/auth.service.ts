@@ -1,13 +1,14 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { SignUpDto } from '@/auth/dto/sign-up.dto';
 import { PrismaService } from '@/prisma/prisma.service';
-import { Roles, User } from '@prisma/client';
+import { Roles } from '@prisma/client';
 import { InjectCrypto } from '@/core/crypto/crypto.decorator';
 import { CryptoService } from '@/core/crypto/crypto.service';
 import { InjectPrisma } from '@/prisma/prisma.decorator';
 import { SignInWithGoogleDto } from '@/auth/dto/sign-in-with-google.dto';
 import { OauthService } from '@/core/oauth/oauth.service';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
     @InjectPrisma() private prismaService: PrismaService,
     @InjectCrypto() private cryptoService: CryptoService,
 
+    private configService: ConfigService,
     private oauthService: OauthService,
     private jwtService: JwtService,
   ) {}
@@ -50,7 +52,12 @@ export class AuthService {
 
     if (isExistingUser) {
       const { id, role } = isExistingUser;
-      return { token: this.jwtService.sign({ id, role }) };
+      return {
+        token: this.jwtService.sign(
+          { id, role },
+          { expiresIn: this.configService.get('JWT_EXPIRES_IN') },
+        ),
+      };
     }
 
     const existingUsersQty = await this.prismaService.user.count();
@@ -66,7 +73,10 @@ export class AuthService {
           role: Roles.ADMIN,
         },
       });
-      const token = this.jwtService.sign({ id: user.id, role: user.role });
+      const token = this.jwtService.sign(
+        { id: user.id, role: user.role },
+        { expiresIn: this.configService.get('JWT_EXPIRES_IN') },
+      );
 
       return { token };
     }
