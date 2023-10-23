@@ -1,5 +1,10 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { SignUpDto } from '@/auth/dto/sign-up.dto';
+import { SignInDto } from '@/auth/dto/sign-in.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Roles } from '@prisma/client';
 import { InjectCrypto } from '@/core/crypto/crypto.decorator';
@@ -40,6 +45,34 @@ export class AuthService {
         },
       });
     }
+  }
+
+  async signIn(dto: SignInDto) {
+    const { email, password } = dto;
+    const isExistingUser = await this.prismaService.user.findFirst({
+      where: { email: email },
+    });
+
+    if (!isExistingUser) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+
+    const isPasswordMatched = this.cryptoService.compare(
+      password,
+      isExistingUser.password,
+    );
+
+    if (!isPasswordMatched) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+    const token = this.jwtService.sign({
+      id: isExistingUser.id,
+      role: isExistingUser.role,
+    });
+
+    return {
+      token,
+    };
   }
 
   async signInWithGoogle(dto: SignInWithGoogleDto) {

@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { closeApp, initApp } from './utils';
 import { OAuth2Client } from 'google-auth-library';
+import { CryptoService } from '@/core/crypto/crypto.service';
 
 jest.mock('google-auth-library');
 
@@ -43,6 +44,51 @@ describe('Auth endpoints', () => {
         .send(mockedUserData);
 
       expect(response.statusCode).toBe(403);
+    });
+  });
+
+  describe('POST /auth/sign-in', () => {
+    it('should successfully sign in', async () => {
+      const cryptoService = new CryptoService();
+      const salt = cryptoService.genSalt(6);
+      const password = 'test';
+      const hashedPassword = cryptoService.hash(password, salt);
+
+      await prisma.user.create({
+        data: { ...mockedUserData, role: 'ADMIN', password: hashedPassword },
+      });
+
+      const response = await request(app.getHttpServer())
+        .post('/auth/sign-in')
+        .send({
+          email: mockedUserData.email,
+          password: mockedUserData.password,
+        });
+
+      expect(response.statusCode).toBe(201);
+      expect(response.body).toHaveProperty('token');
+    });
+
+    it('should throw UNAUTHORIZED for incorrect email', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/auth/sign-in')
+        .send({
+          email: 'incorrect@example.com',
+          password: mockedUserData.password,
+        });
+
+      expect(response.statusCode).toBe(401);
+    });
+
+    it('should throw UNAUTHORIZED for incorrect password', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/auth/sign-in')
+        .send({
+          email: mockedUserData.email,
+          password: 'incorrect-password',
+        });
+
+      expect(response.statusCode).toBe(401);
     });
   });
 
