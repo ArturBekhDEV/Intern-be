@@ -3,10 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { closeApp, initApp } from './utils';
 import { OAuth2Client } from 'google-auth-library';
-<<<<<<< HEAD
 import { CryptoService } from '@/core/crypto/crypto.service';
-=======
->>>>>>> 3a7f60e (feature: finish auth with google and added tests)
 
 jest.mock('google-auth-library');
 
@@ -50,7 +47,6 @@ describe('Auth endpoints', () => {
     });
   });
 
-<<<<<<< HEAD
   describe('POST /auth/sign-in', () => {
     it('should successfully sign in', async () => {
       const cryptoService = new CryptoService();
@@ -124,36 +120,6 @@ describe('Auth endpoints', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/google')
         .send({
-=======
-  describe('POST /auth/google', () => {
-    const token = 'test';
-
-    beforeEach(() => {
-      const googleUser = {
-        given_name: 'test',
-        family_name: 'test',
-        email: 'test@test.com',
-        sub: '123456789',
-      };
-
-      OAuth2Client.prototype.verifyIdToken = jest
-        .fn()
-        .mockImplementation(() => {
-          return Promise.resolve({
-            getPayload: jest.fn().mockImplementation(() => googleUser),
-          });
-        });
-    });
-
-    afterEach(() => {
-      jest.resetAllMocks();
-    });
-
-    it('should successfully sign in with google', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/auth/google')
-        .send({
->>>>>>> 3a7f60e (feature: finish auth with google and added tests)
           token,
         });
 
