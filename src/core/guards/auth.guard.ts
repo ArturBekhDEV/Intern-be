@@ -5,6 +5,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -43,6 +44,7 @@ export class AuthGuard implements CanActivate {
       const user = await this.prismaService.user.findFirst({
         where: { id: isValidToken.id },
       });
+      if (!user) throw new NotFoundException('User not found');
       this.asyncStorage.set('user', { id: user.id, role: user.role });
       return true;
     }

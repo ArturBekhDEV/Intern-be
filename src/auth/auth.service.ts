@@ -72,6 +72,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    if (!isExistingUser.password)
+      throw new ForbiddenException('Please authorize with google account');
+
     const isPasswordMatched = this.cryptoService.compare(
       password,
       isExistingUser.password,
