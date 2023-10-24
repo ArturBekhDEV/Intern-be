@@ -32,10 +32,16 @@ export class AuthGuard implements CanActivate {
     if (isPublic) return true;
 
     const authHeader = request.headers['authorization'];
+    if (
+      !authHeader ||
+      !authHeader.trim().length ||
+      !authHeader.startsWith('Bearer ')
+    )
+      throw new UnauthorizedException();
     const token = authHeader.split(' ')[1];
 
     if (!token) {
-      throw new UnauthorizedException(`You have not provide token in cookie`);
+      throw new UnauthorizedException(`You have not provide Bearer token`);
     }
 
     const isValidToken = this.jwtService.verify(token);
