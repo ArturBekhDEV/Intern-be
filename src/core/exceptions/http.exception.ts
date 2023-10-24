@@ -35,7 +35,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     } else {
       if (this.configService.get('NODE_ENV') === 'development') {
-        console.log(exception.message);
         response.status(500).json({
           status: 500,
           message: exception.message,
