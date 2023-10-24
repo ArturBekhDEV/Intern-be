@@ -1,11 +1,5 @@
-/*
-  Warnings:
-
-  - You are about to drop the `user` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "user";
+-- CreateEnum
+CREATE TYPE "Roles" AS ENUM ('ADMIN', 'USER');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -13,7 +7,7 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
     "last_name" TEXT,
-    "password" TEXT NOT NULL,
+    "password" TEXT,
     "role" "Roles" NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")

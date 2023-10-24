@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { SignUpDto } from '@/auth/dto/sign-up.dto';
 import { SignInDto } from '@/auth/dto/sign-in.dto';
@@ -14,6 +15,7 @@ import { SignInWithGoogleDto } from '@/auth/dto/sign-in-with-google.dto';
 import { OauthService } from '@/core/oauth/oauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { AsyncStorageService } from '@/core/async-storage/async-storage.service';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +27,7 @@ export class AuthService {
     private oauthService: OauthService,
 
     private jwtService: JwtService,
+    private asyncStorage: AsyncStorageService,
   ) {}
 
   async signUp(dto: SignUpDto) {
@@ -36,7 +39,7 @@ export class AuthService {
     } else {
       const hashSalt = this.cryptoService.genSalt(6);
       const hashedPassword = this.cryptoService.hash(password, hashSalt);
-      await this.prismaService.user.create({
+      const user = await this.prismaService.user.create({
         data: {
           email,
           firstName,
@@ -45,6 +48,17 @@ export class AuthService {
           role: Roles.ADMIN,
         },
       });
+
+      const token = this.jwtService.sign(
+        { id: user.id, role: user.role },
+        { expiresIn: this.configService.get('JWT_EXPIRES_IN') },
+      );
+
+      return {
+        token,
+        role: user.role,
+        firstName: user.firstName,
+      };
     }
   }
 
@@ -85,12 +99,14 @@ export class AuthService {
     });
 
     if (isExistingUser) {
-      const { id, role } = isExistingUser;
+      const { id, role, firstName } = isExistingUser;
       return {
         token: this.jwtService.sign(
           { id, role },
           { expiresIn: this.configService.get('JWT_EXPIRES_IN') },
         ),
+        role,
+        firstName,
       };
     }
 
@@ -112,7 +128,21 @@ export class AuthService {
         { expiresIn: this.configService.get('JWT_EXPIRES_IN') },
       );
 
-      return { token };
+      return { token, role: user.role, firstName: user.firstName };
     }
+  }
+
+  async currentUser() {
+    const authUser = this.asyncStorage.getUser();
+    const user = await this.prismaService.user.findFirst({
+      where: { id: authUser.id },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    return {
+      role: user.role,
+      firstName: user.firstName,
+      ...(user.lastName && { lastName: user.lastName }),
+    };
   }
 }
