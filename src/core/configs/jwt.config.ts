@@ -7,4 +7,5 @@ export const jwtOptions: JwtModuleAsyncOptions = {
     signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN') },
   }),
   inject: [ConfigService],
+  global: true,
 };

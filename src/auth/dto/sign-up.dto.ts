@@ -11,7 +11,6 @@ export class SignUpDto {
   @IsString()
   firstName: string;
 
-  @MinLength(3)
   @IsString()
   @IsOptional()
   lastName: string;
