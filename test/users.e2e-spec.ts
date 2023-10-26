@@ -24,6 +24,7 @@ describe('Auth endpoints', () => {
 
   describe('GET /users/', () => {
     it('should successfully get users with pagination', async () => {
+      await prisma.user.create({ data: { ...mockedUserData, role: 'ADMIN' } });
       const response = await request(app.getHttpServer())
         .get('/users?page=0&countPerPage=1')
         .set('Authorization', `Bearer ${token}`);
