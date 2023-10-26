@@ -42,18 +42,18 @@ export const closeApp = async (
 
 export const authorizeTestUser = async (
   prisma: PrismaService,
-  role = Roles.ADMIN,
-  email = 'test@gmail.com',
+  role?: Roles,
+  email?: string,
 ) => {
   const hashSalt = cryptoService.genSalt(6);
   const hashedPassword = cryptoService.hash('test', hashSalt);
   const user = await prisma.user.create({
     data: {
-      email,
+      email: !email ? 'test@gmail.com' : email,
       firstName: 'Test',
       lastName: 'Test',
       password: hashedPassword,
-      role,
+      role: !role ? Roles.ADMIN : role,
     },
   });
 

@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { closeApp, initApp } from './utils';
+import { closeApp, initApp, prismaReset } from './utils';
 import { OAuth2Client } from 'google-auth-library';
 import { CryptoService } from '@/core/crypto/crypto.service';
 
@@ -27,6 +27,7 @@ describe('Auth endpoints', () => {
 
   describe('POST /auth/sign-up', () => {
     it('should successfully sign up', async () => {
+      await prismaReset(prisma);
       const response = await request(app.getHttpServer())
         .post('/auth/sign-up')
         .send(mockedUserData);
