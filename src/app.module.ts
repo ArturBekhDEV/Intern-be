@@ -8,6 +8,7 @@ import { envOptions } from '@/core/configs/env.config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtOptions } from '@/core/configs/jwt.config';
 import { AsyncStorageModule } from './core/async-storage/async-storage.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AsyncStorageModule } from './core/async-storage/async-storage.module';
     ExceptionModule,
     JwtModule.registerAsync(jwtOptions),
     AsyncStorageModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

@@ -1,15 +1,15 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from '@/auth/auth.service';
 import { SignUpDto } from '@/auth/dto/sign-up.dto';
 import { SignInDto } from '@/auth/dto/sign-in.dto';
 import { SignInWithGoogleDto } from '@/auth/dto/sign-in-with-google.dto';
-import { AuthGuard } from '@/core/guards/auth.guard';
+import { Auth } from '@/core/decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(AuthGuard)
+  @Auth()
   @Get('current-user')
   currentUser() {
     return this.authService.currentUser();
