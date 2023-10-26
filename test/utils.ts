@@ -14,7 +14,7 @@ const jwtService = new JwtService({
   privateKey: configService.get('JWT_SECRET_KEY'),
 });
 
-const prismaReset = async (prisma: PrismaService) => {
+export const prismaReset = async (prisma: PrismaService) => {
   await prisma.truncate();
   await prisma.resetSequences();
 };
@@ -40,22 +40,34 @@ export const closeApp = async (
   await app.close();
 };
 
-export const initAppWithAuth = async () => {
-  const { prisma, app } = await initApp();
-
+export const authorizeTestUser = async (
+  prisma: PrismaService,
+  role = Roles.ADMIN,
+  email = 'test@gmail.com',
+) => {
   const hashSalt = cryptoService.genSalt(6);
   const hashedPassword = cryptoService.hash('test', hashSalt);
   const user = await prisma.user.create({
     data: {
-      email: 'test@gmail.com',
+      email,
       firstName: 'Test',
       lastName: 'Test',
       password: hashedPassword,
-      role: Roles.ADMIN,
+      role,
     },
   });
 
   const token = jwtService.sign({ id: user.id, role: user.role });
+  return token;
+};
+
+export const initAppWithAuth = async (
+  role = Roles.ADMIN,
+  email = 'test@gmail.com',
+) => {
+  const { prisma, app } = await initApp();
+
+  const token = await authorizeTestUser(prisma, role, email);
 
   return { prisma, app, token };
 };

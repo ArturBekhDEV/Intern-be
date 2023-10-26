@@ -31,6 +31,11 @@ describe('Auth endpoints', () => {
         .post('/auth/sign-up')
         .send(mockedUserData);
 
+      expect(response.body).toMatchObject({
+        token: expect.any(String),
+        role: expect.any(String),
+        firstName: expect.any(String),
+      });
       expect(response.statusCode).toBe(201);
     });
 

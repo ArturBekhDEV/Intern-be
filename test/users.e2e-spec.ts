@@ -40,7 +40,6 @@ describe('Users endpoints', () => {
       const response = await request(app.getHttpServer())
         .get('/users?page=0&countPerPage=1')
         .set('Authorization', `Bearer ${token}`);
-      console.log(response.body);
       expect(response.body.counts).toBeGreaterThanOrEqual(1);
       expect(response.statusCode).toBe(200);
     });
