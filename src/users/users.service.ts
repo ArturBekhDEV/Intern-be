@@ -24,8 +24,15 @@ export class UsersService {
       skip: page * countPerPage,
       where: { id: { notIn: [user.id] } },
     };
-    const items = await this.prismaService.user.findMany(query);
-    const counts = await this.prismaService.user.count(query);
+
+    const items = await this.prismaService.user.findMany({
+      ...query,
+      orderBy: { createdAt: 'desc' },
+    });
+    const counts = await this.prismaService.user.count({
+      ...query,
+      orderBy: { createdAt: 'desc' },
+    });
 
     return {
       items,
