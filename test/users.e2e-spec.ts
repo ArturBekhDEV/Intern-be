@@ -153,4 +153,51 @@ describe('Users endpoints', () => {
       expect(response.statusCode).toBe(401);
     });
   });
+
+  describe('PATCH users/:id', () => {
+    let token: string;
+    beforeEach(async () => {
+      ({ prisma, app, token } = await initAppWithAuth());
+    });
+
+    it('should successfully update users', async () => {
+      const createdUser = await prisma.user.create({
+        data: {
+          ...mockedUserData,
+          email: 'testnew2@gmail.com',
+          role: 'ADMIN',
+        },
+      });
+      const userid = createdUser.id;
+
+      const response = await request(app.getHttpServer())
+        .patch(`/users/${userid}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          firstName: 'Test!',
+        });
+      console.log(response);
+      expect(response.statusCode).toBe(200);
+    });
+
+    it('should throw UNAUTHORIZED', async () => {
+      const createdUser = await prisma.user.create({
+        data: {
+          ...mockedUserData,
+          email: 'testnew2@gmail.com',
+          role: 'ADMIN',
+        },
+      });
+      const userid = createdUser.id;
+
+      const response = await request(app.getHttpServer())
+        .patch(`/users/${userid}`)
+        .send({
+          firstName: 'Hey here is checking!',
+          role: 'USER',
+        });
+
+      expect(response.statusCode).toBe(401);
+    });
+  });
 });
