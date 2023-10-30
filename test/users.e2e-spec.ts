@@ -116,4 +116,41 @@ describe('Users endpoints', () => {
       expect(response.statusCode).toBe(401);
     });
   });
+  describe('DELETE users/delete', () => {
+    let token: string;
+    beforeEach(async () => {
+      ({ prisma, app, token } = await initAppWithAuth());
+    });
+
+    it('should successfully delete users', async () => {
+      const createdUser = await prisma.user.create({
+        data: {
+          ...mockedUserData,
+          email: 'testnew@gmail.com',
+          role: 'ADMIN',
+        },
+      });
+
+      const userid = createdUser.id;
+
+      const response = await request(app.getHttpServer())
+        .post('/users/delete')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          id: [userid],
+        });
+      console.log(response);
+      expect(response.statusCode).toBe(201);
+    });
+
+    it('should throw UNAUTHORIZED', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/users/delete')
+        .send({
+          id: ['6ea212bc-ec3e-45fc-9408-b448880ec50c'],
+        });
+
+      expect(response.statusCode).toBe(401);
+    });
+  });
 });

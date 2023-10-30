@@ -9,7 +9,7 @@ import {
 import { UsersService } from '@/users/users.service';
 import { Auth } from '@/core/decorators/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
-
+import { DeleteUserDto } from '@/users/dto/delete-user.dto';
 @Auth()
 @Controller('users')
 export class UsersController {
@@ -26,5 +26,10 @@ export class UsersController {
   @Post('')
   create(@Body() dto: CreateUserDto) {
     return this.usersService.create(dto);
+  }
+
+  @Post('delete')
+  deleteUsers(@Body() dto: DeleteUserDto) {
+    return this.usersService.deleteUsers(dto);
   }
 }

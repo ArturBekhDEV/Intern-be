@@ -9,6 +9,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectCrypto } from '@/core/crypto/crypto.decorator';
 import { CryptoService } from '@/core/crypto/crypto.service';
 import { AsyncStorageService } from '@/core/async-storage/async-storage.service';
+import { DeleteUserDto } from '@/users/dto/delete-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -68,6 +69,16 @@ export class UsersService {
         role,
         ...(dto.lastName && { lastName: dto.lastName }),
       },
+    });
+  }
+  async deleteUsers(dto: DeleteUserDto) {
+    const user = this.asyncStorage.getUser();
+    const { id } = dto;
+    if (user.role !== 'ADMIN') {
+      throw new ForbiddenException('You cannot remove users from the system');
+    }
+    await this.prismaService.user.deleteMany({
+      where: { id: { in: id } },
     });
   }
 }
