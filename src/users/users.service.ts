@@ -6,6 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectCrypto } from '@/core/crypto/crypto.decorator';
 import { CryptoService } from '@/core/crypto/crypto.service';
 import { AsyncStorageService } from '@/core/async-storage/async-storage.service';
@@ -79,6 +80,23 @@ export class UsersService {
     }
     await this.prismaService.user.deleteMany({
       where: { id: { in: id } },
+    });
+  }
+  async updateUsers(dto: UpdateUserDto, id: string) {
+    const user = this.asyncStorage.getUser();
+
+    if (user.role !== 'ADMIN')
+      throw new ForbiddenException(
+        "You don't have permissions to perform this action",
+      );
+
+    return await this.prismaService.user.update({
+      data: {
+        ...dto,
+      },
+      where: {
+        id,
+      },
     });
   }
 }
