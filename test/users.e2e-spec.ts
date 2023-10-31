@@ -116,7 +116,7 @@ describe('Users endpoints', () => {
       expect(response.statusCode).toBe(401);
     });
   });
-  describe('DELETE users/delete', () => {
+  describe('POST users/delete', () => {
     let token: string;
     beforeEach(async () => {
       ({ prisma, app, token } = await initAppWithAuth());
@@ -139,7 +139,7 @@ describe('Users endpoints', () => {
         .send({
           id: [userid],
         });
-      console.log(response);
+
       expect(response.statusCode).toBe(201);
     });
 
