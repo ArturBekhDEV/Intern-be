@@ -5,11 +5,15 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from '@/users/users.service';
 import { Auth } from '@/core/decorators/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteUserDto } from '@/users/dto/delete-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
 @Auth()
 @Controller('users')
 export class UsersController {
@@ -31,5 +35,9 @@ export class UsersController {
   @Post('delete')
   deleteUsers(@Body() dto: DeleteUserDto) {
     return this.usersService.deleteUsers(dto);
+  }
+  @Patch(':id')
+  updateUsers(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    return this.usersService.updateUsers(dto, id);
   }
 }
