@@ -53,8 +53,6 @@ export class AuthGuard implements CanActivate {
       if (!user) throw new NotFoundException('User not found');
       this.asyncStorage.set('user', { id: user.id, role: user.role });
       return true;
-    }
-
-    return false;
+    } else throw new UnauthorizedException('token expired');
   }
 }

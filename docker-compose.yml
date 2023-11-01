@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 networks:
   intern-app:
     driver: bridge
@@ -39,6 +39,7 @@ services:
       - ${POSTGRES_TESTS_PORT}:5432
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - intern-app
 volumes:
