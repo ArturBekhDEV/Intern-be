@@ -28,6 +28,7 @@ export const initApp = async () => {
   const app = moduleRef.createNestApplication();
   await app.init();
   await prismaReset(prisma);
+  await new Promise((r) => setTimeout(r, 5000));
   return { prisma, app };
 };
 

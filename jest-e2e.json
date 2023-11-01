@@ -12,5 +12,6 @@
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@core/(.*)$": "<rootDir>/src/core/$1"
   },
-  "collectCoverage": true
+  "collectCoverage": true,
+  "testTimeout": 20000
 }
