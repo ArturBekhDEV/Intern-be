@@ -6,7 +6,7 @@ async function main() {
   const port = process.env.PORT;
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({ origin: process.env.CLIENT_URL, credentials: true });
+  app.enableCors({ origin: '*', credentials: true });
 
   app.useGlobalPipes(new ValidationPipe());
 
