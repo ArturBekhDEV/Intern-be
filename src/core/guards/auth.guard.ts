@@ -50,7 +50,7 @@ export class AuthGuard implements CanActivate {
       const user = await this.prismaService.user.findFirst({
         where: { id: isValidToken.id },
       });
-      if (!user) throw new NotFoundException('User not found');
+      if (!user) throw new UnauthorizedException('User not found');
       this.asyncStorage.set('user', { id: user.id, role: user.role });
       return true;
     } else throw new UnauthorizedException('token expired');
