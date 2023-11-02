@@ -5,7 +5,6 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -40,7 +39,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     const token = authHeader.split(' ')[1];
 
-    if (!token) {
+    if (!token || token == 'null') {
       throw new UnauthorizedException(`You have not provide Bearer token`);
     }
 
